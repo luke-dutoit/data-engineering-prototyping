@@ -1,0 +1,34 @@
+FROM ubuntu:22.10
+
+ENV SPARK_VERSION=3.4.0
+ENV HADOOP_VERSION=hadoop3
+
+
+RUN apt-get update && apt-get install -y \
+ wget \
+ default-jdk \
+ scala && cd /home && mkdir spark && cd spark && \
+ wget https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-$HADOOP_VERSION.tgz && \
+ tar -xvf spark-$SPARK_VERSION-bin-$HADOOP_VERSION.tgz
+
+
+ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-arm64
+ENV SPARK_HOME /home/spark/spark-$SPARK_VERSION-bin-$HADOOP_VERSION
+
+# RUN wget https://repo1.maven.org/maven2/org/spark-project/spark-streaming_2.9.3/0.7.3/spark-streaming_2.9.3-0.7.3.jar -P $SPARK_HOME/jars/
+
+# ENV PYSPARK_SUBMIT_ARGS "--packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.2.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.0 pyspark-shell"
+
+ENV SPARK_MASTER_PORT 7077
+ENV SPARK_MASTER_WEBUI_PORT 8090
+ENV SPARK_MASTER_LOG /spark/logs
+
+ENV CORES=3
+ENV MEMORY=6G
+ENV SPARK_WORKER_WEBUI_PORT 8091
+ENV SPARK_WORKER_LOG /spark/logs
+
+COPY entrypoint.sh /usr/local/bin/ 
+RUN chmod 755 /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
