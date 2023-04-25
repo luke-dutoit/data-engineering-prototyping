@@ -2,7 +2,7 @@ This prototype contains dockerized spark and kafka clusters as well as some prod
 
 Note: you can view the image terminal outputs using docker desktop and opening the running containers.
 
-Getting started using makefile (please see makefile for additional information):
+###Getting started using makefile (please see makefile for additional information):
 
 1. Ensure that you have docker installed.
 2. Start Kafka - for this I am using prebuilt images.
@@ -19,7 +19,7 @@ Getting started using makefile (please see makefile for additional information):
 6. For an example Spark job that opens a csv please run `make run_spark_job`. This will use a csv provided in the datastore.
 7. For an example Spark job that reads a kafka topic and then writes to another - please run `make run_kafka_spark_consumer`.
 
-Inspecting the docker networks:
+###Inspecting the docker networks:
 
 Run `docker network ls` to list networks.
 There should be "host" and "bridge" networks listed.
