@@ -9,8 +9,8 @@ Note: you can view the image terminal outputs using docker desktop and opening t
     1. Run `make run_zookeeper` this will start the zookeeper container to coordinate Kafka.
     2. Run `make run_kafka` and `make run_kafka2` to start 2 kafka brokers. 
     3. Optionally run `make run_kafka_ui` to start the ui. This can be accessed at http://localhost:8080.
-3. Start Kafka producer with `run_kafka_producer` this will build the image and then start the container. This will make a topic and start producing fake events to the topic. Please view in the Kafka ui.
-4. Start Kafka consumer with `run_kafka_consumer` this will build the image and then start the container. Make sure to check the terminal output in docker desktop to ensure messages are being consumed correctly.
+3. Start Kafka producer with `make run_kafka_producer` this will build the image and then start the container. This will make a topic and start producing fake events to the topic. Please view in the Kafka ui.
+4. Start Kafka consumer with `make run_kafka_consumer` this will build the image and then start the container. Make sure to check the terminal output in docker desktop to ensure messages are being consumed correctly.
 
 5. Start Spark - This requires manually built images.
     1. Build the datastore image and volume using `make build_spark_datastore`.
