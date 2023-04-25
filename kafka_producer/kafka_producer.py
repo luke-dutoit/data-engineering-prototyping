@@ -5,7 +5,9 @@ import random
 import json
 import time
 
-def create_fake_record():
+
+def create_fake_record() -> dict:
+    # Use Faker library to generate fake records.
     fake = Faker()
     return {
         "first_name": fake.first_name(),
@@ -15,27 +17,43 @@ def create_fake_record():
         "address": fake.address(),
     }
 
-def main():
-    print("Docker container started")
+
+def create_topic(topic_name: str, num_partitions: int, replication_factor: int) -> None:
+    print(f"Attempting to create topic '{topic_name}'.")
     try:
-        admin_client = kafka.KafkaAdminClient(bootstrap_servers='localhost:9092')
-        admin_client.create_topics([
-            kafka.admin.NewTopic(name="test_topic_1", num_partitions=2, replication_factor=1)
-        ], validate_only=False)
+        admin_client = kafka.KafkaAdminClient(bootstrap_servers="localhost:9092")
+        admin_client.create_topics(
+            [
+                kafka.admin.NewTopic(
+                    name=topic_name,
+                    num_partitions=num_partitions,
+                    replication_factor=replication_factor,
+                )
+            ],
+            validate_only=False,
+        )
+        print("Topic created successfully.")
     except kafka.errors.TopicAlreadyExistsError as e:
+        print("Topic already exists.")
         print(e)
     except Exception as e:
+        print("Unexpected error detected during topic creation.")
         raise e
 
-    producer = kafka.KafkaProducer(bootstrap_servers='localhost:9092')
-    
+
+def main() -> None:
+    print("Docker container started")
+    topic_name = "test_topic_1"
+
+    create_topic(topic_name, 2, 1)
+
+    producer = kafka.KafkaProducer(bootstrap_servers="localhost:9092")
+
     while True:
         record = create_fake_record()
-        producer.send('test_topic_1', value=json.dumps(record).encode('utf-8'))
+        producer.send(topic_name, value=json.dumps(record).encode("utf-8"))
         print(record)
         time.sleep(1)
-
-
 
 
 main()
