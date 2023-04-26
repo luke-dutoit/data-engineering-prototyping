@@ -9,8 +9,16 @@ import os
 # This example reads from kafka stream, aggregates and then writes back into another kafka topic.
 # It is separate from the other example since the print outputs of the other example are not shown in this examples terminal output.
 
+# The goal here is to get the first names from the kafka topic and then count them.
+# The count per first name is then sent to the output topic.
+# The output topic is created here with cleanup policy: compact - please see below for details.
+
+# Since we specify checkpoints - the count is not lost when this container is restarted. 
+# Additionally first names should not be counted more than once.
+
 
 # Create a new topic with cleanup policy compact - this will remove duplicate keys and attempt to only keep at least latest entry for each key.
+# max.compaction.lag.ms = 300000 = 5 mins. Please see kafka ui to observe compaction happening at least every 5 mins.
 def create_topic(topic_name: str, num_partitions: int, replication_factor: int) -> None:
     print(f"Attempting to create topic '{topic_name}'.")
     try:
