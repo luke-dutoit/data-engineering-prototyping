@@ -2,7 +2,7 @@ This prototype contains dockerized spark and kafka clusters as well as some prod
 
 Note: you can view the image terminal outputs using docker desktop and opening the running containers.
 
-### Getting started simple using  make to build images and docker-compose to run them.
+### Getting started simple using  make to build images and docker-compose to run them. (Work in progress / incomplete - docker-compose not yet set up.)
 
 1. Ensure that you have docker and make installed.
 2. Run `make build_all` to build all images.
