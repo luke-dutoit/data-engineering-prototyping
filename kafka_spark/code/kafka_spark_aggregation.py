@@ -21,7 +21,10 @@ def create_topic(topic_name: str, num_partitions: int, replication_factor: int) 
                     name=topic_name,
                     num_partitions=num_partitions,
                     replication_factor=replication_factor,
-                    topic_configs={"cleanup.policy": "compact"},
+                    topic_configs={
+                        "cleanup.policy": "compact",
+                        "max.compaction.lag.ms": 300000,
+                    },
                 )
             ],
             validate_only=False,
