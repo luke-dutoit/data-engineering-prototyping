@@ -21,7 +21,7 @@ Note: you can view the image terminal outputs using docker desktop and opening t
 4. (Optional) Start Kafka consumer with `make run_kafka_consumer` this will build the image and then start the container. Make sure to check the terminal output in docker desktop to ensure messages are being consumed correctly.
 
 5. Start Spark - This requires manually built images.
-    1. Build the datastore image and volume using `make build_spark_datastore`.
+    1. Build the datastore image and volume using `make create_spark_datastore`.
     2. Build the shared image with `make build_spark`. This image is used by both master and both workers.
     3. Start Spark master with 2 workers using `make run_spark`. Master UI can be accessed at http://localhost:8090.
 6. (Optional) For an example Spark job that opens a csv please run `make run_spark_job`. This will use a csv provided in the datastore.

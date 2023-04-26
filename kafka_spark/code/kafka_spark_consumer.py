@@ -82,9 +82,6 @@ def main():
     print("sleep 30 sec")
     time.sleep(30)
 
-    # print("recent progress")
-    # print(sq.recentProgress)
-
     spark.sql("select * from this_query limit 10").show()
     spark.sql("select * from this_query2 order by value desc limit 10").show()
 

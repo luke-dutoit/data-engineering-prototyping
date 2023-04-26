@@ -62,6 +62,8 @@ run_kafka_consumer: build_kafka_consumer
 # in this case the exposed volume uses the /data path within the image and exposes all data within this file including the test csv.
 build_spark_datastore:
 	docker build -t spark_datastore spark_datastore
+
+create_spark_datastore: build_spark_datastore
 	docker create -v /data --name spark_datastore spark_datastore
 
 # One image can be used in multiple containers with different entrypoint arguments to display different behaviours.
@@ -121,4 +123,4 @@ run_spark_job: build_spark_job
 	--name=spark_job \
 	-d spark_job
 
-build_all: build_spark_datastore build_spark build_kafka_producer build_kafka_consumer build_spark_job kafka_spark
+build_all: build_spark_datastore build_spark build_kafka_producer build_kafka_consumer build_spark_job build_kafka_spark

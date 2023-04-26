@@ -13,7 +13,7 @@ import os
 # The count per first name is then sent to the output topic.
 # The output topic is created here with cleanup policy: compact - please see below for details.
 
-# Since we specify checkpoints - the count is not lost when this container is restarted. 
+# Since we specify checkpoints - the count is not lost when this container is restarted.
 # Additionally first names should not be counted more than once.
 
 
