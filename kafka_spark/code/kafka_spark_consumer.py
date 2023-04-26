@@ -1,7 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import MapType, StringType
 from pyspark.sql.functions import col, get_json_object
-
 import json
 import time
 
@@ -55,7 +53,7 @@ def main():
         col("timestamp"),
     )
 
-    print("write stream")
+    print("Write stream to memory")
     sq = (
         sdf.writeStream.format("memory")
         .queryName("this_query")
@@ -72,7 +70,7 @@ def main():
         )
     )
 
-    print("write stream")
+    print("Write stream to memory.")
     sq2 = (
         first_name_df.writeStream.format("memory")
         .queryName("this_query2")
@@ -80,16 +78,7 @@ def main():
         .start()
     )
 
-    print("write stream to kafka")
-    ds = (
-        first_name_df.writeStream.format("kafka")
-        .option("kafka.bootstrap.servers", "host.docker.internal:9092")
-        .option("topic", "pyspark_firstname_count_topic")
-        .option("checkpointLocation", "/data/checkpoint")
-        .outputMode("update")
-        .start()
-    )
-
+    # Add a 30 second wait to allow some data to be processed.
     print("sleep 30 sec")
     time.sleep(30)
 
@@ -103,9 +92,6 @@ def main():
     time.sleep(30)
 
     spark.sql("select * from this_query2 order by value desc limit 10").show()
-
-    print("await termination")
-    ds.awaitTermination()
 
     print("done")
 

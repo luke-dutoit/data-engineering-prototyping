@@ -1,0 +1,15 @@
+FROM python:3.11.2
+
+RUN pip install pyspark kafka-python
+
+RUN apt-get update && apt-get install -y \
+ default-jdk 
+
+ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-arm64
+
+COPY /code .
+
+COPY entrypoint.sh /usr/local/bin/ 
+RUN chmod 755 /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]

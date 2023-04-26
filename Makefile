@@ -97,14 +97,20 @@ run_spark_worker2:
 # For easy starting of all 3 spark containers.
 run_spark: run_spark_master run_spark_worker run_spark_worker2
 
-build_kafka_spark_consumer:
-	docker build -t kafka_spark_consumer kafka_spark_consumer
+build_kafka_spark:
+	docker build -t kafka_spark kafka_spark
 
-run_kafka_spark_consumer: build_kafka_spark_consumer
+run_kafka_spark_consumer: build_kafka_spark
 	docker run --volumes-from spark_datastore \
 	--name=kafka_spark_consumer \
 	--net=host \
-	-d kafka_spark_consumer
+	-d kafka_spark kafka_spark_consumer
+
+run_kafka_spark_aggregation: build_kafka_spark
+	docker run --volumes-from spark_datastore \
+	--name=kafka_spark_aggregation \
+	--net=host \
+	-d kafka_spark kafka_spark_aggregation
 
 build_spark_job:
 	docker build -t spark_job spark_job
@@ -114,3 +120,5 @@ run_spark_job: build_spark_job
 	--volumes-from spark_datastore \
 	--name=spark_job \
 	-d spark_job
+
+build_all: build_spark_datastore build_spark build_kafka_producer build_kafka_consumer build_spark_job kafka_spark
