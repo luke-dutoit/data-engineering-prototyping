@@ -21,7 +21,7 @@ def create_fake_record() -> dict:
 def create_topic(topic_name: str, num_partitions: int, replication_factor: int) -> None:
     print(f"Attempting to create topic '{topic_name}'.")
     try:
-        admin_client = kafka.KafkaAdminClient(bootstrap_servers="localhost:9092")
+        admin_client = kafka.KafkaAdminClient(bootstrap_servers="host.docker.internal:9092")
         admin_client.create_topics(
             [
                 kafka.admin.NewTopic(
@@ -47,7 +47,7 @@ def main() -> None:
 
     create_topic(topic_name, 2, 1)
 
-    producer = kafka.KafkaProducer(bootstrap_servers="localhost:9092")
+    producer = kafka.KafkaProducer(bootstrap_servers="host.docker.internal:9092")
 
     while True:
         record = create_fake_record()

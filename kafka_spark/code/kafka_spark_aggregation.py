@@ -22,7 +22,9 @@ import os
 def create_topic(topic_name: str, num_partitions: int, replication_factor: int) -> None:
     print(f"Attempting to create topic '{topic_name}'.")
     try:
-        admin_client = kafka.KafkaAdminClient(bootstrap_servers="localhost:9092")
+        admin_client = kafka.KafkaAdminClient(
+            bootstrap_servers="host.docker.internal:9092"
+        )
         admin_client.create_topics(
             [
                 kafka.admin.NewTopic(
@@ -65,6 +67,9 @@ def main():
             "spark.jars.packages",
             "org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.0",
         )
+        .config(
+            "spark.executor.cores", "8"
+        )  # By default this will use all 10 cores available from the spark workers. This will prevent other jobs from running properly as there will be no available cores for them to use.
         .getOrCreate()
     )
 

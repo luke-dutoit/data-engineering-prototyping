@@ -1,0 +1,111 @@
+services:
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka 
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+       - KAFKA_ZOOKEEPER_CONNECT=host.docker.internal:2181
+       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://host.docker.internal:9092
+       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
+    healthcheck:
+      test: nc -z localhost 9092 || exit -1
+      start_period: 15s
+      interval: 5s
+      timeout: 10s
+      retries: 10
+  kafka2:
+    image: confluentinc/cp-kafka 
+    ports:
+      - "9093:9093"
+    depends_on:
+      zookeeper:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    environment:
+       - KAFKA_ZOOKEEPER_CONNECT=host.docker.internal:2181
+       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://host.docker.internal:9093
+       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
+
+  kafka_ui:
+    image: provectuslabs/kafka-ui:master
+    ports:
+      - "8080:8080"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka2:
+        condition: service_started
+    environment:
+       - DYNAMIC_CONFIG_ENABLED=true
+       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=host.docker.internal:9092
+  kafka_producer:
+    image: kafka_producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka2:
+        condition: service_started
+  kafka_consumer:
+    image: kafka_consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka2:
+        condition: service_started
+      kafka_producer:
+        condition: service_started
+
+  spark_datastore:
+    image: spark_datastore
+    volumes:
+      - spark_datastore:/data
+  spark_master:
+    image: spark
+    ports:
+      - "7077:7077"
+      - "8090:8090"
+    command: master
+    volumes:
+      - spark_datastore:/data
+  spark_worker:
+    image: spark
+    ports:
+      - "8091:8091"
+    command: worker
+    volumes:
+      - spark_datastore:/data
+  spark_worker2:
+    image: spark
+    ports:
+      - "8092:8092"
+    command: worker
+    volumes:
+      - spark_datastore:/data
+  spark_job:
+    image: kafka_spark
+    command: spark_job
+    volumes:
+      - spark_datastore:/data
+  kafka_spark_consumer:
+    image: kafka_spark
+    command: kafka_spark_consumer
+    volumes:
+      - spark_datastore:/data
+  kafka_spark_aggregation:
+    image: kafka_spark
+    command: kafka_spark_aggregation
+    volumes:
+      - spark_datastore:/data
+
+
+volumes:
+  spark_datastore:
+    external: false

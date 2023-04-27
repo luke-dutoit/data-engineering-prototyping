@@ -50,7 +50,7 @@ build_kafka_producer:
 # It can simplify some behaviours and make others more complex. 
 # Id suggest experimenting with this setting to see how it affects your containers and their connections.
 run_kafka_producer: build_kafka_producer
-	docker run --name=kafka_producer --net=host -d kafka_producer
+	docker run --name=kafka_producer -d kafka_producer
 
 build_kafka_consumer:
 	docker build -t kafka_consumer kafka_consumer
@@ -114,13 +114,11 @@ run_kafka_spark_aggregation: build_kafka_spark
 	--net=host \
 	-d kafka_spark kafka_spark_aggregation
 
-build_spark_job:
-	docker build -t spark_job spark_job
 
-run_spark_job: build_spark_job
-	docker run --net=host \
-	--volumes-from spark_datastore \
-	--name=spark_job \
-	-d spark_job
+run_spark_job: build_kafka_spark
+	docker run --volumes-from spark_datastore \
+	--name=kafka_spark_aggregation \
+	--net=host \
+	-d kafka_spark spark_job
 
-build_all: build_spark_datastore build_spark build_kafka_producer build_kafka_consumer build_spark_job build_kafka_spark
+build_all: build_spark_datastore build_spark build_kafka_producer build_kafka_consumer build_kafka_spark

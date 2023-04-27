@@ -1,4 +1,4 @@
-FROM ubuntu:22.10
+FROM python:3.11.2
 
 ENV SPARK_VERSION=3.4.0
 ENV HADOOP_VERSION=hadoop3

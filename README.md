@@ -2,14 +2,18 @@ This prototype contains dockerized spark and kafka clusters as well as some prod
 
 Note: you can view the image terminal outputs using docker desktop and opening the running containers.
 
-### Getting started simple using  make to build images and docker-compose to run them. (Work in progress / incomplete - docker-compose not yet set up.)
+### Getting started simple using  make to build images and docker-compose to run them.
 
 1. Ensure that you have docker and make installed.
 2. Run `make build_all` to build all images.
-3. Run `docker-compose up` to run all containers.
+3. Run `docker compose up -d` to run all containers.
+4. Cleanup: Run `docker compose down` to stop and remove containers.
+    Alternatively: Run `docker rm -f $(docker ps -a -q)` to remove containers.
+5. Cleanup: Run `docker volume rm $(docker volume ls -q)` to remove volumes.
 
 
 ### Getting started using makefile (please see makefile for additional information):
+Note: This is an alternative process, please cleanup the above process containers and volumes before starting.
 
 1. Ensure that you have docker and make installed.
 2. Start Kafka - for this I am using prebuilt images.
