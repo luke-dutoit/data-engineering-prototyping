@@ -68,7 +68,7 @@ def main():
             "org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.0",
         )
         .config(
-            "spark.executor.cores", "8"
+            "spark.cores.max", "4"
         )  # By default this will use all 10 cores available from the spark workers. This will prevent other jobs from running properly as there will be no available cores for them to use.
         .getOrCreate()
     )
