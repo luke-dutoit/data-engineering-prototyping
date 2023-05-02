@@ -117,7 +117,7 @@ run_kafka_spark_aggregation: build_kafka_spark
 
 run_spark_job: build_kafka_spark
 	docker run --volumes-from spark_datastore \
-	--name=kafka_spark_aggregation \
+	--name=spark_job \
 	--net=host \
 	-d kafka_spark spark_job
 
