@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: spark-worker-k8s
+  namespace: spark
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: spark-worker-k8s
+  template:
+    metadata:
+      namespace: spark
+      labels:
+        component: spark-worker-k8s
+    spec:
+      containers:
+        - name: spark-worker-k8s
+          image: spark
+          env:
+            - name: SPARK_MASTER_HOST
+              value: "spark-master-k8s"
+          imagePullPolicy: Never
+          args: ["worker"]
+          ports:
+            - containerPort: 8091
+          resources:
+            requests:
+              cpu: 100m
+          volumeMounts:
+            - name: spark-data
+              mountPath: /data
+
+      volumes:
+        - name: spark-data
+          emptyDir: {}
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-worker-k8s
+  namespace: spark
+spec:
+  ports:
+    - name: webui
+      port: 8091
+      targetPort: 8091
+  selector:
+    component: spark-worker-k8s

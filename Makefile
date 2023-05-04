@@ -80,10 +80,10 @@ run_spark_master:
 	--name=spark_master \
 	-d spark master
 
-
 run_spark_worker:
 	docker run \
 	-p 8091:8091 \
+	-e SPARK_MASTER_HOST=host.docker.internal \
 	--volumes-from spark_datastore \
 	--name=spark_worker \
 	-d spark worker
@@ -92,6 +92,7 @@ run_spark_worker2:
 	docker run \
 	-p 8092:8092 \
 	-e SPARK_WORKER_WEBUI_PORT=8092 \
+	-e SPARK_MASTER_HOST=host.docker.internal \
 	--volumes-from spark_datastore \
 	--name=spark_worker2 \
 	-d spark worker
@@ -122,3 +123,19 @@ run_spark_job: build_kafka_spark
 	-d kafka_spark spark_job
 
 build_all: build_spark_datastore build_spark build_kafka_producer build_kafka_consumer build_kafka_spark
+
+# to ensure local ingress works properly
+install_nginx:
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
+
+
+# https://testdriven.io/blog/deploying-spark-on-kubernetes/
+run_on_kubernetes: build_all
+	kubectl apply -f ./kubernetes/namespaces.yaml
+	kubectl apply -f ./kubernetes/spark-master.yaml
+	kubectl apply -f ./kubernetes/spark-worker.yaml
+	kubectl apply -f ./kubernetes/spark-ingress.yaml
+	kubectl apply -f ./kubernetes/python-jobs.yaml
+
+remove_from_kubernetes: 
+	kubectl delete -f ./kubernetes/namespaces.yaml

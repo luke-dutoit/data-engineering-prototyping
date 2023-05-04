@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
 
 ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-arm64
 
+ENV KAFKA_BOOTSTRAP_SERVERS host.docker.internal:9092
+ENV SPARK_MASTER spark://host.docker.internal:7077
+
 COPY /code .
 
 COPY entrypoint.sh /usr/local/bin/ 

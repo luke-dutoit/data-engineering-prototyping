@@ -14,7 +14,7 @@ def main():
 
     spark = (
         SparkSession.builder.appName("Spark CSV Example")
-        .master("spark://host.docker.internal:7077")
+        .master(os.environ["SPARK_MASTER"])
         .config(
             "spark.cores.max", "2"
         )  # By default this will use all 10 cores available from the spark workers. This will prevent other jobs from running properly as there will be no available cores for them to use.

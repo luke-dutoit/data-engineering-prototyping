@@ -6,7 +6,7 @@ if [ "$1" = 'master' ]; then
     $SPARK_HOME/bin/spark-class org.apache.spark.deploy.master.Master
 elif [ "$1" = 'worker' ]; then
     echo "Starting spark-worker..."
-    $SPARK_HOME/bin/spark-class org.apache.spark.deploy.worker.Worker spark://host.docker.internal:7077
+    $SPARK_HOME/bin/spark-class org.apache.spark.deploy.worker.Worker spark://${SPARK_MASTER_HOST}:7077
 else
     echo "Unknown command '$1'."
 fi

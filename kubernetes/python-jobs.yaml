@@ -1,0 +1,47 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: python-jobs
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: python-jobs
+  template:
+    metadata:
+      namespace: spark
+      labels:
+        component: python-jobs
+    spec:
+      containers:
+        - name: python-spark-job
+          image: kafka_spark
+          imagePullPolicy: Never
+          args: ["spark_job"]
+          resources:
+            requests:
+              cpu: 100m
+          volumeMounts:
+            - name: spark-data
+              mountPath: /data
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "host.docker.internal:9092"
+            - name: SPARK_MASTER
+              value: "spark://spark-master-k8s:7077"
+
+      volumes:
+        - name: spark-data
+          emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-master-k8s
+  namespace: test
+spec:
+  type: ExternalName
+  externalName: spark-master-k8s.spark.svc.cluster.local
+  ports:
+  - port: 7077

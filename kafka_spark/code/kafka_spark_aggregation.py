@@ -62,7 +62,7 @@ def main():
     print("Setting up Spark session")
     spark = (
         SparkSession.builder.appName("Spark KAFKA Aggregation Example")
-        .master("spark://host.docker.internal:7077")
+        .master(os.environ["SPARK_MASTER"])
         .config(
             "spark.jars.packages",
             "org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.0",
@@ -76,7 +76,7 @@ def main():
     print("Reading from Kafka")
     df = (
         spark.readStream.format("kafka")
-        .option("kafka.bootstrap.servers", "host.docker.internal:9092")
+        .option("kafka.bootstrap.servers", os.environ["KAFKA_BOOTSTRAP_SERVERS"])
         .option("subscribe", "test_topic_1")
         .option("checkpointLocation", "/data/checkpoint")
         .load()
