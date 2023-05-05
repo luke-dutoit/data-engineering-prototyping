@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: python-jobs
-  namespace: test
+  namespace: spark
 spec:
   replicas: 1
   selector:
@@ -19,6 +19,8 @@ spec:
           image: kafka_spark
           imagePullPolicy: Never
           args: ["spark_job"]
+          ports:
+            - containerPort: 8100
           resources:
             requests:
               cpu: 100m
@@ -30,6 +32,17 @@ spec:
               value: "host.docker.internal:9092"
             - name: SPARK_MASTER
               value: "spark://spark-master-k8s:7077"
+            - name: SPARK_DRIVER_PORT
+              value: "8100"
+            # - name: "SPARK_DRIVER_HOST"
+            #   valueFrom:
+            #     fieldRef:
+            #       apiVersion: "v1"
+            #       fieldPath: "status.hostIP"
+            # - name: SPARK_DRIVER_HOST
+            #   value: "python-spark-job.test.svc.cluster.local"
+            - name: SPARK_DRIVER_HOST
+              value: "python-jobs"
 
       volumes:
         - name: spark-data
@@ -38,10 +51,34 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: spark-master-k8s
-  namespace: test
+  name: python-jobs
+  namespace: spark
 spec:
-  type: ExternalName
-  externalName: spark-master-k8s.spark.svc.cluster.local
   ports:
-  - port: 7077
+    - name: spark
+      port: 8100
+      targetPort: 8100
+  selector:
+    component: python-jobs
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: spark-master-k8s
+#   namespace: test
+# spec:
+#   type: ExternalName
+#   externalName: spark-master-k8s.spark.svc.cluster.local
+#   ports:
+#   - port: 7077
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: spark-worker-k8s
+#   namespace: test
+# spec:
+#   type: ExternalName
+#   externalName: spark-worker-k8s.spark.svc.cluster.local
+#   ports:
+#   - port: 8091

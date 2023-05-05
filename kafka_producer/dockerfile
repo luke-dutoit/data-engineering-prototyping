@@ -4,4 +4,6 @@ RUN pip install kafka-python faker
 
 COPY kafka_producer.py .
 
+ENV KAFKA_ADVERTISED_LISTENERS host.docker.internal:9092
+
 CMD ["python", "kafka_producer.py"]

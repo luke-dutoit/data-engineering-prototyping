@@ -12,14 +12,23 @@ def main():
 
     print("Setting up Spark session")
 
-    spark = (
-        SparkSession.builder.appName("Spark CSV Example")
-        .master(os.environ["SPARK_MASTER"])
-        .config(
-            "spark.cores.max", "2"
-        )  # By default this will use all 10 cores available from the spark workers. This will prevent other jobs from running properly as there will be no available cores for them to use.
-        .getOrCreate()
-    )
+
+    spark_session = (
+            SparkSession.builder.appName("Spark CSV Example")
+            .master(os.environ["SPARK_MASTER"])
+            .config(
+                "spark.cores.max", "2"
+            )  # By default this will use all 10 cores available from the spark workers. This will prevent other jobs from running properly as there will be no available cores for them to use.
+        )
+    
+    # These are needed for deployment to kubernetes to allow driver to communicate with workers.
+    if os.environ.get("SPARK_DRIVER_HOST"):
+        spark_session.config("spark.driver.bindAddress", "0.0.0.0")
+        spark_session.config("spark.driver.host", os.environ["SPARK_DRIVER_HOST"])
+        spark_session.config("spark.driver.port", os.environ["SPARK_DRIVER_PORT"])
+        spark_session.config("spark.driver.blockManager", os.environ["SPARK_DRIVER_PORT"])
+
+    spark = spark_session.getOrCreate()
 
     print("Create example dataframe")
 

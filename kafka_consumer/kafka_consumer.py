@@ -1,6 +1,7 @@
 import kafka
 
 import json
+import os
 import time
 
 
@@ -10,7 +11,7 @@ def main():
     consumer = kafka.KafkaConsumer(
         "test_topic_1",
         group_id="python-test-consumer",
-        bootstrap_servers="host.docker.internal:9092",
+        bootstrap_servers=os.environ["KAFKA_BOOTSTRAP_SERVERS"],
     )
 
     for message in consumer:

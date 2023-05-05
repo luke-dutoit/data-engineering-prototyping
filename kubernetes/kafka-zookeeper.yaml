@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: zookeeper
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: zookeeper
+  template:
+    metadata:
+      namespace: kafka
+      labels:
+        component: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: zookeeper
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 2181
+          resources:
+            requests:
+              cpu: 100m
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zookeeper
+  namespace: kafka
+spec:
+  ports:
+    - name: zookeeper
+      port: 2181
+      targetPort: 2181
+  selector:
+    component: zookeeper

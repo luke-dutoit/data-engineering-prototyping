@@ -134,8 +134,13 @@ run_on_kubernetes: build_all
 	kubectl apply -f ./kubernetes/namespaces.yaml
 	kubectl apply -f ./kubernetes/spark-master.yaml
 	kubectl apply -f ./kubernetes/spark-worker.yaml
-	kubectl apply -f ./kubernetes/spark-ingress.yaml
 	kubectl apply -f ./kubernetes/python-jobs.yaml
+	kubectl apply -f ./kubernetes/kafka-zookeeper.yaml
+	kubectl apply -f ./kubernetes/kafka-broker.yaml
+	kubectl apply -f ./kubernetes/kafka-ui.yaml
+	kubectl apply -f ./kubernetes/kafka-producer.yaml
+	kubectl apply -f ./kubernetes/kafka-consumer.yaml
+	kubectl apply -f ./kubernetes/ingress.yaml
 
 remove_from_kubernetes: 
 	kubectl delete -f ./kubernetes/namespaces.yaml

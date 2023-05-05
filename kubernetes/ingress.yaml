@@ -1,0 +1,75 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-master-k8s
+  namespace: ingress
+spec:
+  type: ExternalName
+  externalName: spark-master-k8s.spark.svc.cluster.local #or any external svc
+  ports:
+    - name: webui
+      port: 8090
+      targetPort: 8090
+    - name: spark
+      port: 7077
+      targetPort: 7077
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-worker-k8s
+  namespace: ingress
+spec:
+  type: ExternalName
+  externalName: spark-worker-k8s.spark.svc.cluster.local #or any external svc
+  ports:
+    - name: webui
+      port: 8091
+      targetPort: 8091
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-ui-service
+  namespace: ingress
+spec:
+  type: ExternalName
+  externalName: kafka-ui-service.kafka.svc.cluster.local #or any external svc
+  ports:
+    - name: kafka-ui
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+        - pathType: Prefix
+          path: /spark-master-k8s/
+          backend:
+            service:
+              name: spark-master-k8s
+              port:
+                number: 8090
+        - pathType: Prefix
+          path: /spark-worker-k8s/
+          backend:
+            service:
+              name: spark-worker-k8s
+              port:
+                number: 8091
+        - pathType: Prefix
+          path: /kafka-ui/
+          backend:
+            service:
+              name: kafka-ui-service
+              port:
+                number: 8080

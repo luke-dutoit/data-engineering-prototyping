@@ -18,3 +18,10 @@ metadata:
   name: spark
   labels:
     name: spark
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ingress
+  labels:
+    name: ingress

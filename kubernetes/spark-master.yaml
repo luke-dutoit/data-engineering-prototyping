@@ -56,3 +56,14 @@ spec:
       targetPort: 7077
   selector:
     component: spark-master-k8s
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: python-jobs
+#   namespace: test
+# spec:
+#   type: ExternalName
+#   externalName: python-jobs.test.svc.cluster.local
+#   ports:
+#   - port: 8100

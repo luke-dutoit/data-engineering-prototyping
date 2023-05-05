@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kafka-ui
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: kafka-ui
+  template:
+    metadata:
+      namespace: kafka
+      labels:
+        component: kafka-ui
+    spec:
+      containers:
+        - name: kafka-ui
+          image: provectuslabs/kafka-ui:master
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DYNAMIC_CONFIG_ENABLED
+              value: "true"
+            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+              value: "kafka-broker:9092,kafka-broker:9093"
+          resources:
+            requests:
+              cpu: 100m
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-ui-service
+  namespace: kafka
+spec:
+  ports:
+    - name: kafka-ui
+      port: 8080
+      targetPort: 8080
+  selector:
+    component: kafka-ui
