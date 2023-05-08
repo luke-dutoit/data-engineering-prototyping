@@ -41,3 +41,23 @@ spec:
       targetPort: 8080
   selector:
     component: kafka-ui
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-kafka
+  namespace: kafka
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: kafka-ui-service
+              port:
+                number: 8080

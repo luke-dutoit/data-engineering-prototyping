@@ -132,15 +132,14 @@ install_nginx:
 # https://testdriven.io/blog/deploying-spark-on-kubernetes/
 run_on_kubernetes: build_all
 	kubectl apply -f ./kubernetes/namespaces.yaml
-	kubectl apply -f ./kubernetes/spark-master.yaml
-	kubectl apply -f ./kubernetes/spark-worker.yaml
-	kubectl apply -f ./kubernetes/python-jobs.yaml
-	kubectl apply -f ./kubernetes/kafka-zookeeper.yaml
-	kubectl apply -f ./kubernetes/kafka-broker.yaml
-	kubectl apply -f ./kubernetes/kafka-ui.yaml
-	kubectl apply -f ./kubernetes/kafka-producer.yaml
-	kubectl apply -f ./kubernetes/kafka-consumer.yaml
-	kubectl apply -f ./kubernetes/ingress.yaml
+	kubectl apply -f ./kubernetes/spark/spark-master.yaml
+	kubectl apply -f ./kubernetes/spark/spark-worker.yaml
+	kubectl apply -f ./kubernetes/kafka/kafka-zookeeper.yaml
+	kubectl apply -f ./kubernetes/kafka/kafka-broker.yaml
+	kubectl apply -f ./kubernetes/kafka/kafka-ui.yaml
+	kubectl apply -f ./kubernetes/test/kafka-producer.yaml
+	kubectl apply -f ./kubernetes/test/kafka-consumer.yaml
+	kubectl apply -f ./kubernetes/test/test-spark-job.yaml
 
 remove_from_kubernetes: 
 	kubectl delete -f ./kubernetes/namespaces.yaml

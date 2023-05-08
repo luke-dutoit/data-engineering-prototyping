@@ -48,3 +48,23 @@ spec:
       targetPort: 8091
   selector:
     component: spark-worker-k8s
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-spark-worker
+  namespace: spark
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+        - pathType: Prefix
+          path: /spark-worker-k8s/
+          backend:
+            service:
+              name: spark-worker-k8s
+              port:
+                number: 8091

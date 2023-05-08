@@ -1,22 +1,22 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: kafka-producer
-  namespace: kafka
+  name: kafka-consumer
+  namespace: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: kafka-producer
+      component: kafka-consumer
   template:
     metadata:
-      namespace: kafka
+      namespace: test
       labels:
-        component: kafka-producer
+        component: kafka-consumer
     spec:
       containers:
-        - name: kafka-producer
-          image: kafka_producer
+        - name: kafka-consumer
+          image: kafka_consumer
           imagePullPolicy: Never
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS

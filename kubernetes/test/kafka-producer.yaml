@@ -1,26 +1,26 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: kafka-consumer
+  name: kafka-producer
   namespace: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: kafka-consumer
+      component: kafka-producer
   template:
     metadata:
-      namespace: kafka
+      namespace: test
       labels:
-        component: kafka-consumer
+        component: kafka-producer
     spec:
       containers:
-        - name: kafka-consumer
-          image: kafka_consumer
+        - name: kafka-producer
+          image: kafka_producer
           imagePullPolicy: Never
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka-broker.kafka:9092,kafka-broker.kafka:9093"
+              value: "kafka-broker:9092,kafka-broker:9093"
           resources:
             requests:
               cpu: 100m

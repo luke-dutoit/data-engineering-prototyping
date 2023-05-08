@@ -39,7 +39,6 @@ spec:
       volumes:
         - name: spark-data
           emptyDir: {}
-
 ---
 kind: Service
 apiVersion: v1
@@ -56,14 +55,36 @@ spec:
       targetPort: 7077
   selector:
     component: spark-master-k8s
-# ---
-# kind: Service
-# apiVersion: v1
-# metadata:
-#   name: python-jobs
-#   namespace: test
-# spec:
-#   type: ExternalName
-#   externalName: python-jobs.test.svc.cluster.local
-#   ports:
-#   - port: 8100
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-master-k8s
+  namespace: test
+spec:
+  type: ExternalName
+  externalName: spark-master-k8s.spark.svc.cluster.local 
+  ports:
+    - name: spark
+      port: 7077
+      targetPort: 7077
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-spark-master
+  namespace: spark
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+        - pathType: Prefix
+          path: /spark-master-k8s/
+          backend:
+            service:
+              name: spark-master-k8s
+              port:
+                number: 8090
