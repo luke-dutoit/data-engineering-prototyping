@@ -1,3 +1,5 @@
+# Local Docker
+
 This prototype contains dockerized spark and kafka clusters as well as some producers/consumers for testing purposes.
 
 Note: you can view the image terminal outputs using docker desktop and opening the running containers.
