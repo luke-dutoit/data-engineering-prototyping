@@ -78,11 +78,11 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - host: "localhost"
+  - host: "local-spark-master"
     http:
       paths:
         - pathType: Prefix
-          path: /spark-master-k8s/
+          path: /
           backend:
             service:
               name: spark-master-k8s

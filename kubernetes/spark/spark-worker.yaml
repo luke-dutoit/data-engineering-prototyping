@@ -58,11 +58,11 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - host: "localhost"
+  - host: "local-spark-worker"
     http:
       paths:
         - pathType: Prefix
-          path: /spark-worker-k8s/
+          path: /
           backend:
             service:
               name: spark-worker-k8s

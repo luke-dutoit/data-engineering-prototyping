@@ -51,7 +51,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - host: "localhost"
+  - host: "local-kafka-ui"
     http:
       paths:
         - pathType: Prefix

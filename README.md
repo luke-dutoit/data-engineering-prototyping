@@ -39,3 +39,19 @@ Run `docker network ls` to list networks.
 There should be "host" and "bridge" networks listed.
 
 The docker containers run with `--net=host` should be available in the "host" network while the others will be in the "bridge" network. Please view each network by running the following command: `docker network inspect bridge` or `docker network inspect host`.
+
+# Kubernetes
+
+### Add hosts to local host file for use in ingress.
+Ingress with kubernetes requires a host to be specified. For this we can use localhost and add paths e.g. localhost/kafka-ui/ to allow for multiple service UI's to be available. Unfortunately this does not work very well with the UI's being partially or totally broken.
+
+If there is only a single UI then simply localhost/ will be sufficent. If there are multiple service UI's then then we need to make multiple hosts available. To do this we need to alter the host files on the local machine.
+
+(Mac) The host file can be found here on mac: `/private/etc/hosts`. To edit this file - make a duplicate in a different location, alter the duplicate to add these entries:
+```
+# Local Kafka and Spark
+127.0.0.1	local-kafka-ui
+127.0.0.1	local-spark-master
+127.0.0.1	local-spark-worker
+```
+Then replace the original with the duplicate. You will probably need to use your password for this.
