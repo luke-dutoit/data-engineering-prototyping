@@ -4,7 +4,7 @@ metadata:
   name: spark-worker-k8s
   namespace: spark
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       component: spark-worker-k8s
@@ -20,20 +20,27 @@ spec:
           env:
             - name: SPARK_MASTER_HOST
               value: "spark-master-k8s"
+            - name: SPARK_WORKER_PORT
+              value: "7078"
+            - name: SPARK_WORKER_MEMORY
+              value: "4g"
           imagePullPolicy: Never
           args: ["worker"]
           ports:
             - containerPort: 8091
+            - containerPort: 7078
           resources:
             requests:
               cpu: 100m
+              memory: 5Gi
           volumeMounts:
-            - name: spark-data
-              mountPath: /data
+            - mountPath: /data
+              name: spark-data
 
       volumes:
         - name: spark-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: spark-persistent-volume-claim
 
 ---
 kind: Service
@@ -46,8 +53,24 @@ spec:
     - name: webui
       port: 8091
       targetPort: 8091
+    - name: spark
+      port: 7078
+      targetPort: 7078
   selector:
     component: spark-worker-k8s
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-worker-k8s
+  namespace: test
+spec:
+  type: ExternalName
+  externalName: spark-worker-k8s.spark.svc.cluster.local 
+  ports:
+    - name: spark
+      port: 7078
+      targetPort: 7078
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

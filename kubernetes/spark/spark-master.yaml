@@ -26,8 +26,8 @@ spec:
             requests:
               cpu: 100m
           volumeMounts:
-            - name: spark-data
-              mountPath: /data
+            - mountPath: /data
+              name: spark-data
 
       initContainers:
         - name: spark-datastore
@@ -36,9 +36,11 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: spark-data
+
       volumes:
         - name: spark-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: spark-persistent-volume-claim
 ---
 kind: Service
 apiVersion: v1

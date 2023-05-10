@@ -27,6 +27,7 @@ def main():
         spark_session.config("spark.driver.host", os.environ["SPARK_DRIVER_HOST"])
         spark_session.config("spark.driver.port", os.environ["SPARK_DRIVER_PORT"])
         spark_session.config("spark.driver.blockManager", os.environ["SPARK_DRIVER_PORT"])
+        # spark_session.config("spark.submit.deployMode", "client")
 
     spark = spark_session.getOrCreate()
 

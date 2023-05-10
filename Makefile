@@ -132,6 +132,7 @@ install_nginx:
 # https://testdriven.io/blog/deploying-spark-on-kubernetes/
 run_on_kubernetes: build_all
 	kubectl apply -f ./kubernetes/namespaces.yaml
+	kubectl apply -f ./kubernetes/spark/spark-datastore.yaml
 	kubectl apply -f ./kubernetes/spark/spark-master.yaml
 	kubectl apply -f ./kubernetes/spark/spark-worker.yaml
 	kubectl apply -f ./kubernetes/kafka/kafka-zookeeper.yaml
@@ -139,7 +140,24 @@ run_on_kubernetes: build_all
 	kubectl apply -f ./kubernetes/kafka/kafka-ui.yaml
 	kubectl apply -f ./kubernetes/test/kafka-producer.yaml
 	kubectl apply -f ./kubernetes/test/kafka-consumer.yaml
+
+run_on_kubernetes_test_jobs: build_kafka_spark
 	kubectl apply -f ./kubernetes/test/test-spark-job.yaml
+
+remove_on_kubernetes_test_jobs: build_kafka_spark
+	kubectl delete -f ./kubernetes/test/test-spark-job.yaml
 
 remove_from_kubernetes: 
 	kubectl delete -f ./kubernetes/namespaces.yaml
+
+install_argocd:
+	kubectl create namespace argocd
+	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+setup_argocd:
+	kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+	kubectl port-forward svc/argocd-server -n argocd 8080:443
+	argocd admin initial-password -n argocd
+	
+# run_argocd:
+# 	argocd cluster add docker-desktop
